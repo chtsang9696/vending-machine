@@ -106,8 +106,8 @@ def admin_mode():
 items = {
         '1': {'name': 'Milo', 'price': 3.00, 'quantity': 10},
         '2': {'name': 'Cola', 'price': 2.00, 'quantity': 15},
-        '3': {'name': 'Pepsi', 'price': 3.50, 'quantity': 20},
-        '4': {'name': 'Teh Ais', 'price': 2.50, 'quantity': 12}
+        '3': {'name': 'Pepsi', 'price': 3.00, 'quantity': 20},
+        '4': {'name': 'Teh Ais', 'price': 3.00, 'quantity': 12}
 }
 
 def main():
@@ -134,27 +134,40 @@ def main():
                     print(f"You have selected {selected_item['name']} - RM{selected_item['price']}")
                     amount_due = selected_item['price']
 
-                    #Create debt when item has been selected
+                    # Create debt when item has been selected
                     while amount_due > 0:
                         try:
-                            payment = float(input(f"Please insert RM{amount_due:.2f}: "))
-                            if payment >= amount_due:
-                                change = payment - amount_due
-                                print(f"Thank you for your purchase! Your change is RM{change:.2f}.")
-                                items[selection]['quantity'] -= 1 
-                                break
-                            
+                            payment = int(input(f"The amount due is RM{amount_due}. \nInsert RM: "))
+                            if payment in [1, 5, 10]:  # Check if the payment is a valid note
+                                if payment >= amount_due:
+                                    change = payment - amount_due
+                                    notes_count_10 = change // 10 
+                                    remaining_change = change % 10
+                                    notes_count_5 = remaining_change // 5
+                                    notes_count_1 = remaining_change % 5
+
+                                    print(f"Thank you for your purchase! Your change is RM{change}.")
+                                    if notes_count_10:
+                                        print(f"RM10 x {notes_count_10}")
+                                    if notes_count_5:
+                                        print(f"RM5 x {notes_count_5}")
+                                    if notes_count_1:
+                                        print(f"RM1 x {notes_count_1}")
+
+                                    items[selection]['quantity'] -= 1
+                                    input("Press ENTER to continue")
+                                    break
+                                else:
+                                    print("Invalid Payment. Please insert RM1, RM5 or RM10 notes only.")
                             else:
-                                print("Insufficient payment. Please insert more money.")
-                                amount_due -= payment
-                        except ValueError: #Check if value is number or not
-                            print("Invalid payment amount. Please enter a valid number.")
+                                print("Invalid note. Please insert RM1, RM5 or RM10 notes only.")
+                        except ValueError:  # Check if value is a number or not
+                            print("Invalid payment amount. Please enter a valid whole number.")
                 else:
                     print("Invalid item selection.")
 
         elif choice == "2":
             admin_mode()
-            continue
         elif choice == "3":
             print("Exiting the program. Goodbye!")
             break
